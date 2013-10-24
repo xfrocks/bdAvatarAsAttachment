@@ -104,9 +104,9 @@ class bdAvatarAsAttachment_Helper_AvatarUrl
 
 	protected static function _getAttachment($attachmentId)
 	{
-		if (self::$_attachments[$attachmentId] === false)
+		if (!isset(self::$_attachments[$attachmentId]) OR self::$_attachments[$attachmentId] === false)
 		{
-			$ids = array();
+			$ids = array($attachmentId);
 			foreach (array_keys(self::$_attachments) as $id)
 			{
 				if (self::$_attachments[$id] === false)
