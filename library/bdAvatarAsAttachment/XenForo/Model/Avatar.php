@@ -57,11 +57,17 @@ class bdAvatarAsAttachment_XenForo_Model_Avatar extends XFCP_bdAvatarAsAttachmen
 			'bdAttachmentStore_useTempFile'
 		));
 
-		$attachmentModel->bdAttachmentStore_useTempFile(true);
+		if ($isCallable)
+		{
+			$attachmentModel->bdAttachmentStore_useTempFile(true);
+		}
 
 		$response = parent::recropAvatar($userId, $x, $y);
 
-		$attachmentModel->bdAttachmentStore_useTempFile(false);
+		if ($isCallable)
+		{
+			$attachmentModel->bdAttachmentStore_useTempFile(false);
+		}
 
 		return $response;
 	}
