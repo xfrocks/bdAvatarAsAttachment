@@ -30,11 +30,11 @@
   <public_template_modifications>
     <modification template="account_avatar" modification_key="bdavatarasattachment_account_avatar" description="Switch to use $gravatarEmail instead of $visitor.gravatar" execution_order="10" enabled="1" action="str_replace">
       <find><![CDATA[{$visitor.gravatar}]]></find>
-      <replace><![CDATA[{$gravatarEmail}]]></replace>
+      <replace><![CDATA[{$_bdAvatarAsAttachment_visitorGravatar}]]></replace>
     </modification>
     <modification template="account_avatar_overlay" modification_key="bdavatarasattachment_account_avatar_overlay" description="Switch to use $gravatarEmail instead of $visitor.gravatar" execution_order="10" enabled="1" action="str_replace">
       <find><![CDATA[{$visitor.gravatar}]]></find>
-      <replace><![CDATA[{$gravatarEmail}]]></replace>
+      <replace><![CDATA[{$_bdAvatarAsAttachment_visitorGravatar}]]></replace>
     </modification>
   </public_template_modifications>
   <bb_code_media_sites/>

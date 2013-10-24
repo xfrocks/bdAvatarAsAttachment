@@ -17,8 +17,15 @@ class bdAvatarAsAttachment_XenForo_ControllerPublic_Account extends XFCP_bdAvata
 
 				if ($visitor['avatar_date'] == 1)
 				{
-					$subView->params['gravatarEmail'] = '';
+					$visitorGravatar = '';
+					$subView->params['gravatarEmail'] = $visitor['email'];
 				}
+				else
+				{
+					$visitorGravatar = $visitor['gravatar'];
+				}
+
+				$subView->params['_bdAvatarAsAttachment_visitorGravatar'] = $visitorGravatar;
 			}
 		}
 
