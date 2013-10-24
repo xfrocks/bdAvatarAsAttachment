@@ -81,7 +81,7 @@ class bdAvatarAsAttachment_XenForo_DataWriter_User extends XFCP_bdAvatarAsAttach
 		{
 			foreach ($this->_bdAvatarAsAttachment_deletedAttachmentIds as $attachmentId)
 			{
-				$dw = XenForo_DataWriter::create('XenForo_DataWriter_Attachment');
+				$dw = XenForo_DataWriter::create('XenForo_DataWriter_Attachment', XenForo_DataWriter::ERROR_SILENT);
 				$dw->setExistingData($attachmentId);
 				$dw->delete();
 			}
