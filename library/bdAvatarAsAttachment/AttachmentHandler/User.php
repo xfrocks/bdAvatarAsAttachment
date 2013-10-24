@@ -20,9 +20,15 @@ class bdAvatarAsAttachment_AttachmentHandler_User extends XenForo_AttachmentHand
 	{
 		$userDw = XenForo_DataWriter::create('XenForo_DataWriter_User');
 		$userDw->setExistingData($attachment['content_id']);
-		$userDw->set('avatar_date', 0);
-		$userDw->set('gravatar', '');
-		$userDw->save();
+
+		$sizesAndIds = explode(',', $userDw->get('gravatar'));
+
+		if (in_array($attachment['attachment_id'], $sizesAndIds))
+		{
+			$userDw->set('avatar_date', 0);
+			$userDw->set('gravatar', '');
+			$userDw->save();
+		}
 	}
 
 	protected function _getContentRoute()
