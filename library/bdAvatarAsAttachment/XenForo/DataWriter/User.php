@@ -52,11 +52,11 @@ class bdAvatarAsAttachment_XenForo_DataWriter_User extends XFCP_bdAvatarAsAttach
 		}
 		elseif ($this->get('avatar_date') === 1)
 		{
-			if ($this->get('gravatar') == '')
+			if ($this->isChanged('gravatar') AND $this->get('gravatar') == '')
 			{
 				// our sizes and ids information has been reset...
 				// set it back!
-				$this->set('gravatar', $this->getExisting('gravatar'));
+				$this->set('gravatar', $this->getExisting('gravatar'), '', array('runVerificationCallback' => false));
 			}
 		}
 		elseif ($this->get('avatar_date') == 0)
