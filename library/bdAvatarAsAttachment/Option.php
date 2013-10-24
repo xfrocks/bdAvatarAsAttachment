@@ -2,8 +2,8 @@
 
 class bdAvatarAsAttachment_Option
 {
-	public static function getUploadFileName()
+	public static function getUploadFileNamePrefix()
 	{
-		return md5('avatar_' . XenForo_Application::getConfig()->get('globalSalt'));
+		return md5(XenForo_Application::getConfig()->get('globalSalt'));
 	}
 }

@@ -74,7 +74,7 @@ class bdAvatarAsAttachment_XenForo_Model_Avatar extends XFCP_bdAvatarAsAttachmen
 
 	protected function _writeAvatar($userId, $size, $tempFile)
 	{
-		$upload = new XenForo_Upload(bdAvatarAsAttachment_Option::getUploadFileName(), $tempFile);
+		$upload = new XenForo_Upload(bdAvatarAsAttachment_Option::getUploadFileNamePrefix() . sprintf('avatar%d%s.jpg', $userId, $size), $tempFile);
 		$dataId = $this->getModelFromCache('XenForo_Model_Attachment')->insertUploadedAttachmentData($upload, $userId);
 
 		$attachmentDw = XenForo_DataWriter::create('XenForo_DataWriter_Attachment');

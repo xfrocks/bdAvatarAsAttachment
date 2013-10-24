@@ -4,9 +4,11 @@ class bdAvatarAsAttachment_XenForo_DataWriter_AttachmentData extends XFCP_bdAvat
 {
 	protected function _preSave()
 	{
-		if ($this->get('filename') == bdAvatarAsAttachment_Option::getUploadFileName())
+		$prefix = bdAvatarAsAttachment_Option::getUploadFileNamePrefix();
+		$fileName = $this->get('filename');
+		if (strpos($fileName, $prefix) === 0)
 		{
-			$this->set('filename', 'avatar.jpg');
+			$this->set('filename', substr($fileName, strlen($prefix)));
 		}
 
 		return parent::_preSave();
