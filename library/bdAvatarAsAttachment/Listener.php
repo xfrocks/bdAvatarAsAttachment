@@ -41,6 +41,19 @@ class bdAvatarAsAttachment_Listener
 		);
 		XenForo_Application::set('contentTypes', $contentTypes);
 	}
+	
+	public static function front_controller_pre_view(XenForo_FrontController $fc, XenForo_ControllerResponse_Abstract &$controllerResponse, XenForo_ViewRenderer_Abstract &$viewRenderer, array &$containerParams)
+	{
+		if ($viewRenderer instanceof XenForo_ViewRenderer_HtmlPublic)
+		{
+			bdAvatarAsAttachment_Helper_AvatarUrl::setDelayedPrepare(true);
+		}
+	}
+	
+	public static function front_controller_post_view(XenForo_FrontController $fc, &$output)
+	{
+		bdAvatarAsAttachment_Helper_AvatarUrl::replaceHashes($output);
+	}
 
 	public static function file_health_check(XenForo_ControllerAdmin_Abstract $controller, array &$hashes)
 	{

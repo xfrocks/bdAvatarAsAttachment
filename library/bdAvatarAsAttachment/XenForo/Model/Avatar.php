@@ -42,8 +42,7 @@ class bdAvatarAsAttachment_XenForo_Model_Avatar extends XFCP_bdAvatarAsAttachmen
 
 		if (!empty($user['avatar_date']) AND $user['avatar_date'] == 1 AND !empty($user['gravatar']))
 		{
-			$avatarUrl = bdAvatarAsAttachment_Helper_AvatarUrl::prepare($user, $size, false);
-			return $avatarUrl->getPath();
+			return bdAvatarAsAttachment_Helper_AvatarUrl::getPath($user, $size);
 		}
 
 		return parent::getAvatarFilePath($userId, $size, $externalDataPath);

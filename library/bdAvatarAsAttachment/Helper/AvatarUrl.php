@@ -4,69 +4,55 @@ class bdAvatarAsAttachment_Helper_AvatarUrl
 {
 	protected static $_attachments = array();
 	protected static $_attachmentModel = null;
+	protected static $_delayedPrepare = false;
+	protected static $_hashes = array();
 
-	protected $_attachmentId;
-	protected $_size;
-	protected $_canonical;
+	public static function getPath(array $user, $size)
+	{
+		$attachmentId = self::_getAttachmentId($user, $size);
 
-	protected function __construct($attachmentId, $size, $canonical)
-	{
-		$this->_attachmentId = $attachmentId;
-		$this->_size = $size;
-		$this->_canonical = $canonical;
-	}
-	
-	public function getPath()
-	{
-		$attachment = self::_getAttachment($this->_attachmentId);
-		
+		$attachment = self::_getAttachment($attachmentId);
+
 		if (empty($attachment))
 		{
 			return false;
 		}
-		
+
 		return self::_getAttachmentModel()->getAttachmentDataFilePath($attachment);
 	}
 
-	public function __toString()
+	public static function getUrl($attachmentId, $size, $canonical)
 	{
-		$attachment = self::_getAttachment($this->_attachmentId);
+		$attachment = self::_getAttachment($attachmentId);
 
 		if (empty($attachment))
 		{
 			$fakeUser = array('user_id' => 0);
 
-			return XenForo_Template_Helper_Core::callHelper('avatar', array(
+			$url = XenForo_Template_Helper_Core::callHelper('avatar', array(
 				$fakeUser,
-				$this->_size
+				$size,
+				'',
+				$canonical,
 			));
 		}
-
-		$type = 'attachments';
-		if ($this->_canonical)
+		else
 		{
-			$type = 'canonical:' . $type;
+			$type = 'attachments';
+			if ($canonical)
+			{
+				$type = 'canonical:' . $type;
+			}
+
+			$url = XenForo_Link::buildPublicLink($type, $attachment);
 		}
-		
-		return XenForo_Link::buildPublicLink($type, $attachment);
+
+		return $url;
 	}
 
 	public static function prepare(array $user, $size, $canonical)
 	{
-		$attachmentId = 0;
-
-		$sizesAndIds = explode(',', $user['gravatar']);
-		while (count($sizesAndIds) > 0)
-		{
-			$_size = array_shift($sizesAndIds);
-			$_id = array_shift($sizesAndIds);
-
-			if ($_size === $size)
-			{
-				$attachmentId = $_id;
-				break;
-			}
-		}
+		$attachmentId = self::_getAttachmentId($user, $size);
 
 		if (empty($attachmentId))
 		{
@@ -78,7 +64,29 @@ class bdAvatarAsAttachment_Helper_AvatarUrl
 			self::$_attachments[$attachmentId] = false;
 		}
 
-		return new self($attachmentId, $size, $canonical);
+		if (self::$_delayedPrepare)
+		{
+			return self::_getHash($attachmentId, $size, $canonical);
+		}
+		else
+		{
+			return self::getUrl($attachmentId, $size, $canonical);
+		}
+	}
+
+	public static function replaceHashes(&$html)
+	{
+		foreach (self::$_hashes as $hash => $hashInfo)
+		{
+			$url = self::getUrl($hashInfo[0], $hashInfo[1], $hashInfo[2]);
+
+			$html = str_replace($hash, $url, $html);
+		}
+	}
+
+	public static function setDelayedPrepare($enabled)
+	{
+		self::$_delayedPrepare = $enabled;
 	}
 
 	/**
@@ -125,6 +133,42 @@ class bdAvatarAsAttachment_Helper_AvatarUrl
 		}
 
 		return self::$_attachments[$attachmentId];
+	}
+
+	protected static function _getAttachmentId(array $user, $size)
+	{
+		$attachmentId = 0;
+
+		$sizesAndIds = explode(',', $user['gravatar']);
+		while (count($sizesAndIds) > 0)
+		{
+			$_size = array_shift($sizesAndIds);
+			$_id = array_shift($sizesAndIds);
+
+			if ($_size === $size)
+			{
+				$attachmentId = $_id;
+				break;
+			}
+		}
+
+		return $attachmentId;
+	}
+
+	protected static function _getHash($attachmentId, $size, $canonical)
+	{
+		$hash = sprintf('<!-- %s / %s_%s_%d -->', __CLASS__, $attachmentId, $size, $canonical);
+
+		if (empty(self::$_hashes[$hash]))
+		{
+			self::$_hashes[$hash] = array(
+				$attachmentId,
+				$size,
+				$canonical
+			);
+		}
+
+		return $hash;
 	}
 
 }
