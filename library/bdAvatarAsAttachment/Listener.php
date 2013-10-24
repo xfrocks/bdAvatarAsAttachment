@@ -34,6 +34,12 @@ class bdAvatarAsAttachment_Listener
 			__CLASS__,
 			'helperAvatarUrl'
 		);
+		
+		$contentTypes = XenForo_Application::get('contentTypes');
+		$contentTypes['bdavatarasattachment_user'] = array(
+			'attachment_handler_class' => 'bdAvatarAsAttachment_AttachmentHandler_User',
+		);
+		XenForo_Application::set('contentTypes', $contentTypes);
 	}
 
 	public static function file_health_check(XenForo_ControllerAdmin_Abstract $controller, array &$hashes)
