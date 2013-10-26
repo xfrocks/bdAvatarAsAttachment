@@ -34,8 +34,10 @@ class bdAvatarAsAttachment_Listener
 			__CLASS__,
 			'helperAvatarUrl'
 		);
+
+		XenForo_CacheRebuilder_Abstract::$builders['bdAvatarAsAttachment'] = 'bdAvatarAsAttachment_CacheRebuilder';
 	}
-	
+
 	public static function front_controller_pre_view(XenForo_FrontController $fc, XenForo_ControllerResponse_Abstract &$controllerResponse, XenForo_ViewRenderer_Abstract &$viewRenderer, array &$containerParams)
 	{
 		if ($viewRenderer instanceof XenForo_ViewRenderer_HtmlPublic)
@@ -43,10 +45,19 @@ class bdAvatarAsAttachment_Listener
 			bdAvatarAsAttachment_Helper_AvatarUrl::setDelayedPrepare(true);
 		}
 	}
-	
+
 	public static function front_controller_post_view(XenForo_FrontController $fc, &$output)
 	{
 		bdAvatarAsAttachment_Helper_AvatarUrl::replaceHashes($output);
+	}
+
+	public static function template_post_render($templateName, &$content, array &$containerData, XenForo_Template_Abstract $template)
+	{
+		if ($template instanceof XenForo_Template_Admin AND $templateName == 'tools_rebuild')
+		{
+			// the impact is so small that I didn't bother to preload the template...
+			$content .= $template->create('bdavatarasattachment_tools_rebuild', $template->getParams());
+		}
 	}
 
 	public static function file_health_check(XenForo_ControllerAdmin_Abstract $controller, array &$hashes)

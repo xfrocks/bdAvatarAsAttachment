@@ -26,11 +26,11 @@ class bdAvatarAsAttachment_XenForo_DataWriter_User extends XFCP_bdAvatarAsAttach
 	{
 		if ($this->get('avatar_date') == XenForo_Application::$time)
 		{
+			$existingAttachmentIds = $this->_bdAvatarAsAttachment_getExistingAttachmentIds();
 			$attachmentIds = $this->getModelFromCache('XenForo_Model_Avatar')->bdAvatarAsAttachment_getAttachmentIds($this->get('user_id'));
+
 			if ($attachmentIds !== false)
 			{
-				$existingAttachmentIds = $this->_bdAvatarAsAttachment_getExistingAttachmentIds();
-
 				$sizesAndIds = array();
 				foreach (array_merge($existingAttachmentIds, $attachmentIds) as $size => $id)
 				{
@@ -40,13 +40,13 @@ class bdAvatarAsAttachment_XenForo_DataWriter_User extends XFCP_bdAvatarAsAttach
 
 				$this->set('avatar_date', 1);
 				$this->set('gravatar', implode(',', $sizesAndIds), '', array('runVerificationCallback' => false));
+			}
 
-				foreach ($existingAttachmentIds as $_size => $_id)
+			foreach ($existingAttachmentIds as $_size => $_id)
+			{
+				if ($attachmentIds === false OR (isset($attachmentIds[$_size]) AND $attachmentIds[$_size] != $_id))
 				{
-					if (isset($attachmentIds[$_size]) AND $attachmentIds[$_size] != $_id)
-					{
-						$this->_bdAvatarAsAttachment_deletedAttachmentIds[] = $_id;
-					}
+					$this->_bdAvatarAsAttachment_deletedAttachmentIds[] = $_id;
 				}
 			}
 		}

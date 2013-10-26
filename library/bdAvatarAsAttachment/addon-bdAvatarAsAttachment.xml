@@ -3,8 +3,22 @@
   <admin_navigation/>
   <admin_permissions/>
   <admin_style_properties/>
-  <admin_templates/>
   <admin_template_modifications/>
+  <admin_templates>
+    <template title="bdavatarasattachment_tools_rebuild"><![CDATA[<xen:form action="{xen:adminlink 'tools/cache-rebuild'}">
+	<h2 class="subHeading">{xen:phrase bdavatarasattachment_move_avatars}</h2>
+
+	<xen:selectunit name="options[direction]" label="{xen:phrase bdavatarasattachment_direction}">
+		<xen:option value=""></xen:option>
+		<xen:option value="attachment">{xen:phrase bdavatarasattachment_direction_attachment}</xen:option>
+		<xen:option value="avatar">{xen:phrase bdavatarasattachment_direction_avatar}</xen:option>
+	</xen:selectunit>
+	<xen:spinboxunit name="options[batch]" value="50" step="25" min="1" label="{xen:phrase items_to_process_per_page}:" />
+
+	<xen:submitunit save="{xen:phrase rebuild_now}" />
+	<input type="hidden" name="cache" value="bdAvatarAsAttachment" />
+</xen:form>]]></template>
+  </admin_templates>
   <code_events/>
   <code_event_listeners>
     <listener event_id="file_health_check" execute_order="10" callback_class="bdAvatarAsAttachment_Listener" callback_method="file_health_check" active="1" hint="" description=""/>
@@ -15,6 +29,7 @@
     <listener event_id="load_class_datawriter" execute_order="10" callback_class="bdAvatarAsAttachment_Listener" callback_method="load_class" active="1" hint="" description=""/>
     <listener event_id="load_class_model" execute_order="10" callback_class="bdAvatarAsAttachment_Listener" callback_method="load_class" active="1" hint="" description=""/>
     <listener event_id="load_class_view" execute_order="10" callback_class="bdAvatarAsAttachment_Listener" callback_method="load_class" active="1" hint="" description=""/>
+    <listener event_id="template_post_render" execute_order="10" callback_class="bdAvatarAsAttachment_Listener" callback_method="template_post_render" active="1" description=""/>
   </code_event_listeners>
   <cron/>
   <email_templates/>
@@ -25,7 +40,12 @@
     <permissions/>
     <interface_groups/>
   </permissions>
-  <phrases/>
+  <phrases>
+    <phrase title="bdavatarasattachment_direction" version_id="1" version_string="1.0"><![CDATA[Direction]]></phrase>
+    <phrase title="bdavatarasattachment_direction_attachment" version_id="1" version_string="1.0"><![CDATA[To attachment]]></phrase>
+    <phrase title="bdavatarasattachment_direction_avatar" version_id="1" version_string="1.0"><![CDATA[Back to default mode]]></phrase>
+    <phrase title="bdavatarasattachment_move_avatars" version_id="1" version_string="1.0"><![CDATA[Move Avatars]]></phrase>
+  </phrases>
   <route_prefixes/>
   <style_properties/>
   <templates/>
